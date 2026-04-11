@@ -1,0 +1,53 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - kmbFavs: list (optional) - List of favorite KMB routes
+    //   - ctbFavs: list (optional) - List of favorite CTB routes
+    //   - mtrFavs: list (optional) - List of favorite MTR stations
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidFavItem(item) {
+      return item is map &&
+             item.keys().hasAll(['id']) &&
+             item.id is string;
+    }
+
+    function isValidFavList(listData) {
+      return listData is list && listData.size() <= 100;
+    }
+
+    function isValidUserProfile(data) {
+      return data.keys().hasOnly(['kmbFavs', 'ctbFavs', 'mtrFavs']) &&
+             (!('kmbFavs' in data) || isValidFavList(data.kmbFavs)) &&
+             (!('ctbFavs' in data) || isValidFavList(data.ctbFavs)) &&
+             (!('mtrFavs' in data) || isValidFavList(data.mtrFavs));
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow update: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow delete: if isOwner(userId);
+    }
+  }
+}

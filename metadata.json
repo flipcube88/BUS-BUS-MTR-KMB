@@ -1,0 +1,5 @@
+{
+  "name": "HK Transit ETA",
+  "description": "Real-time arrival information for KMB and MTR in Hong Kong.",
+  "requestFramePermissions": []
+}
