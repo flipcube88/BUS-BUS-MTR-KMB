@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import KmbTab from "@/components/KmbTab";
 import CtbTab from "@/components/CtbTab";
 import MtrTab from "@/components/MtrTab";
-import { Bus, Train, LogIn, LogOut } from "lucide-react";
+import FavsTab from "@/components/FavsTab";
+import { Bus, Train, LogIn, LogOut, Star } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { auth, loginWithGoogle, logout } from "@/lib/firebase";
@@ -25,10 +26,10 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 dark:from-slate-900 dark:to-slate-950 flex justify-center items-center p-4 md:p-8 font-sans transition-colors duration-300">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col h-[850px] max-h-[90vh] border-[6px] border-slate-800/5 dark:border-slate-100/5 relative transition-colors duration-300">
+    <div className="min-h-[100dvh] bg-gradient-to-br from-slate-100 to-slate-300 dark:from-slate-900 dark:to-slate-950 flex justify-center items-center p-0 md:p-8 font-sans transition-colors duration-300">
+      <div className="w-full md:max-w-md bg-white dark:bg-slate-900 md:rounded-[2.5rem] md:shadow-2xl overflow-hidden flex flex-col h-[100dvh] md:h-[850px] md:max-h-[90vh] border-0 md:border-[6px] border-slate-800/5 dark:border-slate-100/5 relative transition-colors duration-300">
         {/* App Header */}
-        <div className="bg-white dark:bg-slate-900 pt-8 pb-4 px-6 text-center border-b dark:border-slate-800 z-10 relative shadow-sm flex justify-between items-center transition-colors duration-300">
+        <div className="bg-white dark:bg-slate-900 pt-[max(env(safe-area-inset-top),2rem)] md:pt-8 pb-4 px-6 text-center border-b dark:border-slate-800 z-10 relative shadow-sm flex justify-between items-center transition-colors duration-300">
           <div className="w-10">
             {user ? (
               <Button variant="ghost" size="icon" onClick={logout} title="Logout" className="h-8 w-8 rounded-full text-slate-500">
@@ -51,8 +52,15 @@ export default function App() {
           </div>
         </div>
         
-        <Tabs defaultValue="kmb" className="flex-1 flex flex-col bg-slate-50/50 dark:bg-slate-950/50">
-          <TabsList className="grid w-full grid-cols-3 rounded-none border-b dark:border-slate-800 h-14 bg-white dark:bg-slate-900 p-0 transition-colors duration-300">
+        <Tabs defaultValue="favs" className="flex-1 flex flex-col bg-slate-50/50 dark:bg-slate-950/50">
+          <TabsList className="grid w-full grid-cols-4 rounded-none border-b dark:border-slate-800 h-14 bg-white dark:bg-slate-900 p-0 transition-colors duration-300">
+            <TabsTrigger 
+              value="favs" 
+              className="data-active:bg-purple-50 dark:data-active:bg-purple-950/30 data-active:text-purple-600 dark:data-active:text-purple-400 data-active:border-b-2 data-active:border-purple-600 dark:data-active:border-purple-500 rounded-none h-full text-slate-500 dark:text-slate-400 transition-all"
+            >
+              <Star className="w-4 h-4 mr-1.5" />
+              <span className="font-semibold text-sm">Favs</span>
+            </TabsTrigger>
             <TabsTrigger 
               value="kmb" 
               className="data-active:bg-red-50 dark:data-active:bg-red-950/30 data-active:text-red-600 dark:data-active:text-red-400 data-active:border-b-2 data-active:border-red-600 dark:data-active:border-red-500 rounded-none h-full text-slate-500 dark:text-slate-400 transition-all"
@@ -77,6 +85,9 @@ export default function App() {
           </TabsList>
           
           <div className="flex-1 overflow-hidden relative">
+            <TabsContent value="favs" className="absolute inset-0 m-0 outline-none flex flex-col">
+              <FavsTab />
+            </TabsContent>
             <TabsContent value="kmb" className="absolute inset-0 m-0 outline-none flex flex-col">
               <KmbTab />
             </TabsContent>

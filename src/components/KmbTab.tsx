@@ -8,6 +8,19 @@ import { Badge } from '@/components/ui/badge';
 import { getKmbRoute, getKmbRouteStops, getKmbStop, getKmbEta, KmbRoute, KmbRouteStop, KmbStop, KmbEta } from '@/lib/kmb-service';
 import { useFavorites } from '@/lib/useFavorites';
 
+const formatTime = (isoString: string) => {
+  if (!isoString) return '';
+  const date = new Date(isoString);
+  return date.toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' });
+};
+
+const getMinutesLeft = (isoString: string) => {
+  if (!isoString) return null;
+  const diff = new Date(isoString).getTime() - new Date().getTime();
+  const mins = Math.floor(diff / 60000);
+  return mins < 0 ? 0 : mins;
+};
+
 export default function KmbTab() {
   const [routeInput, setRouteInput] = useState('');
   const [routeInfo, setRouteInfo] = useState<KmbRoute | null>(null);
@@ -95,19 +108,6 @@ export default function KmbTab() {
     setEtaLoading(false);
   };
 
-  const formatTime = (isoString: string) => {
-    if (!isoString) return '';
-    const date = new Date(isoString);
-    return date.toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const getMinutesLeft = (isoString: string) => {
-    if (!isoString) return null;
-    const diff = new Date(isoString).getTime() - new Date().getTime();
-    const mins = Math.floor(diff / 60000);
-    return mins < 0 ? 0 : mins;
-  };
-
   return (
     <div className="flex flex-col h-full bg-slate-50/50 dark:bg-slate-950/50">
       {/* Search Bar */}
@@ -189,49 +189,13 @@ export default function KmbTab() {
           </div>
         ) : !routeInfo && !loading ? (
           <div className="absolute inset-0 flex flex-col p-4 overflow-y-auto">
-            {kmbFavs.length > 0 ? (
-              <div className="space-y-3 pb-20">
-                <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center ml-1">
-                  <Star className="w-3.5 h-3.5 mr-1.5 fill-yellow-400 text-yellow-400" /> Saved Routes
-                </h3>
-                {kmbFavs.map(fav => (
-                  <div 
-                    key={fav.id} 
-                    onClick={() => {
-                      setRouteInput(fav.route);
-                      setBound(fav.bound);
-                      searchRoute(fav.route, fav.bound, fav.stopId);
-                    }}
-                    className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-red-300 dark:hover:border-red-800 transition-colors flex items-center justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center space-x-2 mb-1">
-                        <Badge variant="destructive" className="px-2 py-0 rounded-md font-bold">{fav.route}</Badge>
-                        {fav.stopName && (
-                          <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{fav.stopName}</span>
-                        )}
-                      </div>
-                      <div className="flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
-                        <span>{fav.orig_tc}</span>
-                        <ArrowRight className="w-3 h-3 mx-1.5" />
-                        <span>{fav.dest_tc}</span>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-red-500" onClick={(e) => { e.stopPropagation(); toggleKmbFav(fav); }}>
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    </Button>
-                  </div>
-                ))}
+            <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-slate-500 p-8 text-center mt-10">
+              <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
+                <Bus className="w-8 h-8 text-slate-300 dark:text-slate-600" />
               </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-slate-500 p-8 text-center mt-10">
-                <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                  <Bus className="w-8 h-8 text-slate-300 dark:text-slate-600" />
-                </div>
-                <p className="font-medium text-slate-600 dark:text-slate-400">Where are you going?</p>
-                <p className="text-sm mt-1">Search for a KMB route to see live arrival times.</p>
-              </div>
-            )}
+              <p className="font-medium text-slate-600 dark:text-slate-400">Where are you going?</p>
+              <p className="text-sm mt-1">Search for a KMB route to see live arrival times.</p>
+            </div>
           </div>
         ) : stops.length > 0 ? (
           <ScrollArea className="h-full w-full">

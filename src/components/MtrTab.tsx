@@ -130,44 +130,13 @@ export default function MtrTab() {
       <div className="flex-1 overflow-hidden relative">
         {!selectedLine || !selectedStation ? (
           <div className="absolute inset-0 flex flex-col p-4 overflow-y-auto">
-            {mtrFavs.length > 0 ? (
-              <div className="space-y-3 pb-20">
-                <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center ml-1">
-                  <Star className="w-3.5 h-3.5 mr-1.5 fill-yellow-400 text-yellow-400" /> Saved Stations
-                </h3>
-                {mtrFavs.map(fav => (
-                  <div 
-                    key={fav.id} 
-                    onClick={() => {
-                      setSelectedLine(fav.line);
-                      setSelectedStation(fav.station);
-                    }}
-                    className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-blue-300 dark:hover:border-blue-800 transition-colors flex items-center justify-between"
-                  >
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm mr-3 shrink-0" style={{ backgroundColor: fav.color }}>
-                        <Train className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 text-lg leading-tight">{fav.stationName}</div>
-                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400" style={{ color: fav.color }}>{fav.lineName}</div>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-red-500" onClick={(e) => { e.stopPropagation(); toggleMtrFav(fav); }}>
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    </Button>
-                  </div>
-                ))}
+            <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-slate-500 p-8 text-center mt-10">
+              <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
+                <Train className="w-8 h-8 text-slate-300 dark:text-slate-600" />
               </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-slate-500 p-8 text-center mt-10">
-                <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                  <Train className="w-8 h-8 text-slate-300 dark:text-slate-600" />
-                </div>
-                <p className="font-medium text-slate-600 dark:text-slate-400">Select a station</p>
-                <p className="text-sm mt-1">Choose a line and station to see live train times.</p>
-              </div>
-            )}
+              <p className="font-medium text-slate-600 dark:text-slate-400">Select a station</p>
+              <p className="text-sm mt-1">Choose a line and station to see live train times.</p>
+            </div>
           </div>
         ) : (
           <ScrollArea className="h-full w-full">
